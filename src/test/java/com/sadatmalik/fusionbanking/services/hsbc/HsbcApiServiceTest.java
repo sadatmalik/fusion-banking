@@ -17,7 +17,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.web.client.RestTemplate;
 
 import static com.sadatmalik.fusionbanking.services.hsbc.HsbcApiServiceTestUtils.*;
@@ -27,7 +26,6 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @SpringBootTest(classes = FusionBankingApplication.class)
-@ActiveProfiles("test")
 class HsbcApiServiceTest {
 
     @Autowired

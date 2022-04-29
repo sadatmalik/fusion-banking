@@ -6,13 +6,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
 
 import static com.sadatmalik.fusionbanking.controllers.TestUtils.mockAccount;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(classes = FusionBankingApplication.class)
-@ActiveProfiles("test")
 class AccountServicesRegistryTest {
 
     @Autowired

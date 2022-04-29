@@ -40,8 +40,9 @@ class HsbcControllerIT {
                 .andDo(print())
 
                 .andExpect(status().isOk())
-                .andExpect(content().string(containsString("redirect:" +
-                        HsbcAuthenticationEndpoints.AUTHORIZE_URL)));
+                .andExpect(content().string(
+                        containsString(
+                                HsbcAuthenticationEndpoints.AUTHORIZE_URL)));
     }
 
 }

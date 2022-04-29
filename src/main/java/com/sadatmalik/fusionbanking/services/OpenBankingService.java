@@ -15,9 +15,9 @@ public interface OpenBankingService {
 
     String getAuthorizationUrl();
 
-    void getAccessToken(String authCode);
+    String getAccessToken(String authCode);
 
-    List<Account> getUserAccounts();
+    Account[] getUserAccounts();
 
     List<Transaction> getTransactions(Account account);
 

@@ -75,22 +75,24 @@ public class HsbcController implements OpenBankingService {
 
         HsbcConsent consent = hsbcAuth.getConsentID(clientAccessToken);
         String authorizationURL = hsbcAuth.getAuthorizationURL(consent);
-        log.debug("Redirecting to HSBC auth URL: " + authorizationURL);
+        log.debug("HSBC auth URL: " + authorizationURL);
 
-        return "redirect:" + authorizationURL;
+        return authorizationURL;
     }
 
     @Override
     @GetMapping({"/get-user-access-token/{authCode}"})
-    public void getAccessToken(@PathVariable String authCode) {
+    public String getAccessToken(@PathVariable String authCode) {
         HsbcUserAccessToken.setCurrentToken(hsbcAuth.getAccessToken(authCode));
+        return HsbcUserAccessToken.current().getAccessToken();
     }
 
     @Override
     @GetMapping({"/get-user-accounts"})
-    public List<Account> getUserAccounts() {
-        List<Account> accounts = hsbc.getUserAccounts();
-        return accounts;
+    public Account[] getUserAccounts() {
+        // todo converting from list to array - refactor this
+        List<Account> accountList = hsbc.getUserAccounts();
+        return accountList.toArray(new Account[0]);
     }
 
     @Override

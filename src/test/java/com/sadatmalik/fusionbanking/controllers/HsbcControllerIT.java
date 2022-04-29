@@ -1,5 +1,6 @@
 package com.sadatmalik.fusionbanking.controllers;
 
+import com.sadatmalik.fusionbanking.oauth.hsbc.HsbcAuthenticationEndpoints;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,7 +9,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.assertj.core.api.Assertions.assertThat;
-
+import static org.hamcrest.Matchers.containsString;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -28,33 +33,15 @@ class HsbcControllerIT {
         assertThat(controller).isNotNull();
     }
 
-//    @Test
-//    void testHsbcAuthorizationUrl() throws Exception {
-//        mockMvc.perform(get("/hsbc")
-//                        .with(user(principal)))
-//
-//                .andExpect(status().is3xxRedirection())
-//                .andExpect(view().name(containsString("redirect:" +
-//                        HsbcAuthenticationEndpoints.AUTHORIZE_URL)));
-//    }
-//
-//    @Test
-//    void testHsbcCallbackWithoutAuthCode() throws Exception {
-//        mockMvc.perform(get("/")
-//                        .with(user(principal)))
-//
-//                .andExpect(status().is3xxRedirection())
-//                .andExpect(view().name(
-//                        containsString("redirect:/quickstats")));
-//    }
-//
-//    @Test
-//    void testHsbcCallbackWithAuthCode() throws Exception {
-//        mockMvc.perform(get("/?code=1234")
-//                        .with(user(principal)))
-//
-//                .andExpect(status().is3xxRedirection())
-//                .andExpect(view().name(
-//                        containsString("redirect:/dashboard")));
-//    }
+    @Test
+    void testGetAuthorizationUrl() throws Exception {
+        mockMvc.perform(get("/get-auth-url"))
+
+                .andDo(print())
+
+                .andExpect(status().isOk())
+                .andExpect(content().string(containsString("redirect:" +
+                        HsbcAuthenticationEndpoints.AUTHORIZE_URL)));
+    }
+
 }

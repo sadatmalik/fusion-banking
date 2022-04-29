@@ -3,6 +3,7 @@ package com.sadatmalik.fusionbanking.services.hsbc;
 import com.sadatmalik.fusionbanking.model.*;
 import com.sadatmalik.fusionbanking.oauth.hsbc.HsbcAuthenticationService;
 import com.sadatmalik.fusionbanking.oauth.hsbc.HsbcUserAccessToken;
+import com.sadatmalik.fusionbanking.repositories.BankRepository;
 import com.sadatmalik.fusionbanking.services.AccountServicesRegistry;
 import com.sadatmalik.fusionbanking.services.TransactionService;
 import com.sadatmalik.fusionbanking.services.hsbc.model.accounts.HsbcAccount;
@@ -10,7 +11,6 @@ import com.sadatmalik.fusionbanking.services.hsbc.model.accounts.HsbcAccountList
 import com.sadatmalik.fusionbanking.services.hsbc.model.balances.HsbcBalanceObject;
 import com.sadatmalik.fusionbanking.services.hsbc.model.transacations.HsbcTransaction;
 import com.sadatmalik.fusionbanking.services.hsbc.model.transacations.HsbcTransactionObject;
-import com.sadatmalik.repositories.BankRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;

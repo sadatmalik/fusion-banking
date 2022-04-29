@@ -1,4 +1,4 @@
-package com.sadatmalik.repositories;
+package com.sadatmalik.fusionbanking.repositories;
 
 import com.sadatmalik.fusionbanking.model.Bank;
 import org.springframework.data.repository.CrudRepository;

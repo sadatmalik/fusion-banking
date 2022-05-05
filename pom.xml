@@ -44,6 +44,12 @@
 			<artifactId>spring-boot-starter-actuator</artifactId>
 		</dependency>
 
+		<!-- Logging -->
+<!--		<dependency>-->
+<!--			<groupId>org.springframework.cloud</groupId>-->
+<!--			<artifactId>spring-cloud-starter-sleuth</artifactId>-->
+<!--		</dependency>-->
+
 		<!-- Web -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -79,8 +85,9 @@
 		<dependency>
 			<groupId>org.bouncycastle</groupId>
 			<artifactId>bc-fips</artifactId>
-			<version>1.0.2</version>
+			<version>1.0.2.3</version>
 		</dependency>
+
 
 		<!-- Cloud -->
 		<dependency>

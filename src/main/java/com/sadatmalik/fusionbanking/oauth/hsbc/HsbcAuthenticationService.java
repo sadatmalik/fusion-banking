@@ -1,9 +1,10 @@
 package com.sadatmalik.fusionbanking.oauth.hsbc;
 
 import com.sadatmalik.fusionbanking.config.OauthConfig;
+import com.sadatmalik.fusionbanking.messaging.events.ActionEnum;
+import com.sadatmalik.fusionbanking.messaging.source.BankingEventSource;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -35,14 +36,13 @@ import java.util.Arrays;
 @RequiredArgsConstructor
 public final class HsbcAuthenticationService implements HsbcAuthenticationEndpoints {
 
-    @Autowired
-    RestTemplate restTemplate;
+    private final RestTemplate restTemplate;
 
-    @Autowired
-    JwtHelper jwtHelper;
+    private final JwtHelper jwtHelper;
 
-    @Autowired
-    OauthConfig oauthConfig;
+    private final OauthConfig oauthConfig;
+
+    private final BankingEventSource bankingEventSource;
 
     /**
      * Initiates the two-step OAuth flow - requests and if successfully
@@ -228,6 +228,8 @@ public final class HsbcAuthenticationService implements HsbcAuthenticationEndpoi
      *         &client_assertion=eyJhbGciOiJSUzI1NiIsImtpZCI6IjhkZThjYTc3LWQ2ODEtNDc4Mi04MTIyLWUwMzkyNTg5MDIxYiJ9.eyJpc3MiOiIyMTFlMzZkZS02NGIyLTQ3OWUtYWUyOC04YTViNDFhMWE5NDAiLCJhdWQiOiJodHRwczovL3NhbmRib3guaHNiYy5jb20vcHNkMi9vYmllL3YzLjEvYXMvdG9rZW4ub2F1dGgyIiwic3ViIjoiMjExZTM2ZGUtNjRiMi00NzllLWFlMjgtOGE1YjQxYTFhOTQwIiwiaWF0IjoxNDk5MTgzNjAxLCJleHAiOjE3NzkzNDg1MjF9.uu282OmEHUa0t6z6T68MfXzEGGgq8PiWuyJxuNQ1be6iWdD5sVbw3W--_O6TFAH-ae7BYXsE0kncYgA6gF9AmkXuA77w_Wbn2YyjPCB9gDCkrlJUS6rvb3UJYcIBZ7W-WZlRAsRE0l6EV74c5xnyL9c7cpGMfQ-HfPsYOG4JCsrvtpAHdo7jHWTVgKoe67jWGQkNOYt1Ba7rCf4y-fqQ3d6hZoptAAcJd26yigvV4768GHQGrBvgAc7OzutOGzYARAgStpjQMp0kMiOGIzq-TUsDlvtMrx2fH8gfy2uG2HvzsROkbNedL-iO5PmswNrDvCYEWZmVjMcaVg--ZF0sjg'
      *         "https://sandbox.hsbc.com/psd2/obie/v3.1/as/token.oauth2"
      *
+     * Publishes token created events upon successful token exchange.
+     *
      * @param authCode the authorisation code from the far end's redirect.
      * @return the user access token - the final return from successful negotiation
      * of the complete Oauth flow sequence.
@@ -250,6 +252,11 @@ public final class HsbcAuthenticationService implements HsbcAuthenticationEndpoi
                 restTemplate.exchange(ACCESS_TOKEN_URL, HttpMethod.POST, request, HsbcUserAccessToken.class);
 
         log.debug("User Access Token Response ---------" + response.getBody());
+
+        bankingEventSource.publishUserTokenChangeEvent(
+                ActionEnum.CREATED.name(),
+                response.getBody().getAccessToken());
+
 
         return response.getBody();
     }
@@ -306,13 +313,24 @@ public final class HsbcAuthenticationService implements HsbcAuthenticationEndpoi
      * in case it has expired, it will be internally refreshed by the call to {@code
      * refreshAccessToken()}.
      *
+     * Publishes expired token and refreshed token action events.
+     *
      * @see HsbcAuthenticationService#refreshAccessToken(HsbcUserAccessToken)
      * @param token the user access token
      */
     public void validateTokenExpiry(HsbcUserAccessToken token) {
         // @todo handle the refresh in UserDetails on a timer?
         if (token.isExpiring()) {
+            bankingEventSource.publishUserTokenChangeEvent(
+                    ActionEnum.EXPIRED.name(),
+                    token.getAccessToken());
+
             HsbcUserAccessToken.setCurrentToken(refreshAccessToken(token));
+
+            bankingEventSource.publishUserTokenChangeEvent(
+                    ActionEnum.REFRESHED.name(),
+                    token.getAccessToken());
+
         }
     }
 

@@ -38,7 +38,8 @@ public class BankingEventSource {
      *    GET,
      *    CREATED,
      *    UPDATED,
-     *    DELETED
+     *    DELETED,
+     *    EXPIRED
      * }
      *
      * Publish the message using the send() method on the MessageChannel class returned from
